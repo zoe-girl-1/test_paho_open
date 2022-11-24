@@ -21,7 +21,6 @@ MQTTSubscribe::MQTTSubscribe(const std::string serverAddress, const std::string 
 	} catch (const mqtt::exception& e) {
 		std::cout << "...Failed to initialize server host" << std::endl;
 		std::cerr << e << std::endl;
-		// change state..
 	}
 }
 MQTTSubscribe::~MQTTSubscribe() {
@@ -29,7 +28,7 @@ MQTTSubscribe::~MQTTSubscribe() {
 	delete this->cli;
 }
 
-void MQTTSubscribe::connectToServer() {
+int MQTTSubscribe::connectToServer() {
 	std::cout << "Connecting to server... ";
 	try {
 		// Last Will and Testament setup
@@ -45,10 +44,11 @@ void MQTTSubscribe::connectToServer() {
 	} catch (const mqtt::exception& e) {
 		std::cout << "...Failed to connect to server" << std::endl;
 		std::cerr << e << std::endl;
-		// change state..
+		return 1;
 	}
+	return 0;
 }
-void MQTTSubscribe::disconnectFromServer() {
+int MQTTSubscribe::disconnectFromServer() {
 	std::cout << "Disconnecting from server... ";
 	try {
 		this->cli->disconnect()->wait();
@@ -56,11 +56,12 @@ void MQTTSubscribe::disconnectFromServer() {
 	} catch (const mqtt::exception& e) {
 		std::cout << "...Failed to disconnect from server" << std::endl;
 		std::cerr << e << std::endl;
-		// change state..
+		return 1;
 	}
+	return 0;
 }
 
-void MQTTSubscribe::subscribe(std::string topic) {
+int MQTTSubscribe::subscribe(std::string topic) {
 	system("cls");
 	std::cout << "Subscribing to topic(s)... ";
 	try {
@@ -73,6 +74,7 @@ void MQTTSubscribe::subscribe(std::string topic) {
 	} catch (const mqtt::exception& e) {
 		std::cout << "...Failed to subscribe to topic" << std::endl;
 		std::cerr << e << std::endl;
-		// change state..
+		return 1;
 	}
+	return 0;
 }

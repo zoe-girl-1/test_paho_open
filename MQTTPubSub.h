@@ -7,8 +7,8 @@ public:
 	~MQTTPubSub();
 
 	// Setup functions
-	void connectToServer();
-	void disconnectFromServer();
+	int connectToServer();
+	int disconnectFromServer();
 
 	// Active functions
 	int sub(std::string topic);

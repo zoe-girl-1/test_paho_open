@@ -15,10 +15,15 @@
 //  - Lambda functions to catch the received subscribe messages
 //  - Use of the 'topic' class for both publishing and subscribing
 //
+//	To use the custom broker (if mosquitto broker is initialized and installed) put "net start mosquitto" into an admin cmd.
+//  To stop disconnect the broker use "net stop mosquitto".
+//
+
 #include "MQTT.h"
 
 // Example of arguments
 // SERVER_ADDRESS = "tcp://test.mosquitto.org:1883"
+//	OR "tcp://10.74.53.79:1883"
 // QOS			  = 1
 // USER_ID		  = user1
 
@@ -36,5 +41,6 @@ int main(int argc, char* argv[]) {
 	}
 	std::string SERVER_ADDRESS{ argv[1] }, CLIENT_ID{ argv[3] };
 	int QOS = atoi(argv[2]);
-	MQTT::menu(CLIENT_ID, SERVER_ADDRESS, QOS);
+	if (MQTT::menu(CLIENT_ID, SERVER_ADDRESS, QOS) == 1)
+		std::cout << "\nAn error occured, so the program was stopped.\n";
 }

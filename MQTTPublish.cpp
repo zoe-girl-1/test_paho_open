@@ -9,7 +9,6 @@ MQTTPublish::MQTTPublish(const std::string serverAddress, const std::string clie
 	} catch (const mqtt::exception& e) {
 		std::cout << "...Failed to initialize server host" << std::endl;
 		std::cerr << e << std::endl;
-		// change state..
 	}
 }
 MQTTPublish::~MQTTPublish() {
@@ -17,7 +16,7 @@ MQTTPublish::~MQTTPublish() {
 	delete this->cli;
 }
 
-void MQTTPublish::connectToServer() {
+int MQTTPublish::connectToServer() {
 	std::cout << "Connecting to server... ";
 	try {
 		this->cli->connect()->wait();
@@ -25,10 +24,11 @@ void MQTTPublish::connectToServer() {
 	} catch (const mqtt::exception& e) {
 		std::cout << "...Failed to connect to server" << std::endl;
 		std::cerr << e << std::endl;
-		// change state..
+		return 1;
 	}
+	return 0;
 }
-void MQTTPublish::disconnectFromServer() {
+int MQTTPublish::disconnectFromServer() {
 	std::cout << "Disconnecting from server... ";
 	try {
 		this->cli->disconnect()->wait();
@@ -36,11 +36,12 @@ void MQTTPublish::disconnectFromServer() {
 	} catch (const mqtt::exception& e) {
 		std::cout << "...Failed to disconnect from server" << std::endl;
 		std::cerr << e << std::endl;
-		// change state..
+		return 1;
 	}
+	return 0;
 }
 
-void MQTTPublish::publish(std::string topic, /*std::vector<*/std::string/*>*/ messages) {
+int MQTTPublish::publish(std::string topic, /*std::vector<*/std::string/*>*/ messages) {
 	std::cout << "Publishing message... ";
 	try {
 		mqtt::topic top(*this->cli, topic, this->QoS);
@@ -54,6 +55,7 @@ void MQTTPublish::publish(std::string topic, /*std::vector<*/std::string/*>*/ me
 	} catch (const mqtt::exception& e) {
 		std::cout << "...Failed to publish message" << std::endl;
 		std::cerr << e << std::endl;
-		// change state..
+		return 1;
 	}
+	return 0;
 }

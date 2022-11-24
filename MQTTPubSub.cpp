@@ -21,7 +21,6 @@ MQTTPubSub::MQTTPubSub(const std::string serverAddress, const std::string client
 	} catch (const mqtt::exception& e) {
 		std::cout << "...Failed to initialize server host" << std::endl;
 		std::cerr << e << std::endl;
-		// change state..
 	}
 }
 MQTTPubSub::~MQTTPubSub() {
@@ -29,7 +28,7 @@ MQTTPubSub::~MQTTPubSub() {
 	delete this->cli;
 }
 
-void MQTTPubSub::connectToServer() {
+int MQTTPubSub::connectToServer() {
 	std::cout << "Connecting to server... ";
 	try {
 		// Last Will and Testament setup
@@ -45,10 +44,11 @@ void MQTTPubSub::connectToServer() {
 	} catch (const mqtt::exception& e) {
 		std::cout << "...Failed to connect to server" << std::endl;
 		std::cerr << e << std::endl;
-		// change state..
+		return 1;
 	}
+	return 0;
 }
-void MQTTPubSub::disconnectFromServer() {
+int MQTTPubSub::disconnectFromServer() {
 	std::cout << "Disconnecting from server... ";
 	try {
 		this->cli->disconnect()->wait();
@@ -56,8 +56,9 @@ void MQTTPubSub::disconnectFromServer() {
 	} catch (const mqtt::exception& e) {
 		std::cout << "...Failed to disconnect from server" << std::endl;
 		std::cerr << e << std::endl;
-		// change state..
+		return 1;
 	}
+	return 0;
 }
 
 int MQTTPubSub::sub(std::string topic) {
@@ -73,7 +74,6 @@ int MQTTPubSub::sub(std::string topic) {
 	} catch (const mqtt::exception& e) {
 		std::cout << "...Failed to subscribe to topic" << std::endl;
 		std::cerr << e << std::endl;
-		// change state..
 		return 1;
 	}
 	return 0;
@@ -90,7 +90,6 @@ int MQTTPubSub::pub(std::string topic, std::string message) {
 	} catch (const mqtt::exception& e) {
 		std::cout << "...Failed to publish to topic" << std::endl;
 		std::cerr << e << std::endl;
-		// change state..
 		return 1;
 	}
 	return 0;
@@ -113,7 +112,7 @@ int MQTTPubSub::pubsub(std::vector<std::string> topics_sub, std::vector<std::str
 	std::string usrMsg;
 	while (std::getline(std::cin, usrMsg)) {
 		if (!usrMsg.empty()) {
-			usrMsg = this->clientID + ": " + usrMsg;
+			//usrMsg = this->clientID + ": " + usrMsg;
 			for (auto x : topics_pub) {
 				if (pub(x, usrMsg) != 0) {
 					std::cout << "ERROR: Could not publish to topics.." << std::endl;

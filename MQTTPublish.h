@@ -7,11 +7,11 @@ public:
 	~MQTTPublish();
 
 	// Setup functions
-	void connectToServer();
-	void disconnectFromServer();
+	int connectToServer();
+	int disconnectFromServer();
 
 	// Active function
-	void publish(std::string topic, /*std::vector<*/std::string/*>*/ messages);
+	int publish(std::string topic, /*std::vector<*/std::string/*>*/ messages);
 
 private:
 	const std::string serverAddress;

@@ -7,11 +7,11 @@ public:
 	~MQTTSubscribe();
 
 	// Setup functions
-	void connectToServer();
-	void disconnectFromServer();
+	int connectToServer();
+	int disconnectFromServer();
 
 	// Active functions
-	void subscribe(std::string topic);
+	int subscribe(std::string topic);
 private:
 	const std::string serverAddress;
 	const std::string clientID;

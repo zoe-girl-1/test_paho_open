@@ -9,9 +9,9 @@ std::vector<std::string> MQTT::splitStringBySpace(std::string input) {
 	return topics;
 }
 
-void MQTT::publish(std::string CLIENT_ID, std::string SERVER_ADDRESS, int QOS) {
+int MQTT::publish(std::string CLIENT_ID, std::string SERVER_ADDRESS, int QOS) {
 	MQTTPublish pub(SERVER_ADDRESS, CLIENT_ID, QOS);
-	pub.connectToServer();
+	if (pub.connectToServer() == 1) return 1;
 	system("cls");
 
 	std::string topicInput;
@@ -27,18 +27,18 @@ void MQTT::publish(std::string CLIENT_ID, std::string SERVER_ADDRESS, int QOS) {
 				std::getline(std::cin, messageInput);
 				if (messageInput.length() != 0)
 					for (auto x : splitStringBySpace(topicInput))
-						pub.publish(x, messageInput);
+						if (pub.publish(x, messageInput) == 1) return 1;
 				else break;
 				system("cls");
 			}
 		} else break;
 		system("cls");
 	}
-	pub.disconnectFromServer();
+	if (pub.disconnectFromServer() == 1) return 1;
 }
-void MQTT::subscribe(std::string CLIENT_ID, std::string SERVER_ADDRESS, int QOS) {
+int MQTT::subscribe(std::string CLIENT_ID, std::string SERVER_ADDRESS, int QOS) {
 	MQTTSubscribe sub(SERVER_ADDRESS, CLIENT_ID, QOS, true);
-	sub.connectToServer();
+	if (sub.connectToServer() == 1) return 1;
 
 	system("cls");
 	// get topic(s)
@@ -54,7 +54,7 @@ void MQTT::subscribe(std::string CLIENT_ID, std::string SERVER_ADDRESS, int QOS)
 
 	// subscribe
 	for (auto x : topics)
-		sub.subscribe(x);
+		if (sub.subscribe(x) == 1) return 1;
 
 	// print subscribed to
 	std::cout << "Subscribed to ";
@@ -68,11 +68,11 @@ void MQTT::subscribe(std::string CLIENT_ID, std::string SERVER_ADDRESS, int QOS)
 	while (std::getline(std::cin, msg))
 		if (msg.empty()) break;
 
-	sub.disconnectFromServer();
+		if (sub.disconnectFromServer() == 1) return 1;
 }
-void MQTT::pubsub(std::string CLIENT_ID, std::string SERVER_ADDRESS, int QOS) {
+int MQTT::pubsub(std::string CLIENT_ID, std::string SERVER_ADDRESS, int QOS) {
 	MQTTPubSub ps(SERVER_ADDRESS, CLIENT_ID, QOS, true);
-	ps.connectToServer();
+	if (ps.connectToServer() == 1) return 1;
 
 	system("cls");
 	// get topic(s) for publish
@@ -99,10 +99,10 @@ void MQTT::pubsub(std::string CLIENT_ID, std::string SERVER_ADDRESS, int QOS) {
 	for (auto x : splitStringBySpace(topicInput))
 		topics_sub.push_back(x);
 
-	ps.pubsub(topics_sub, topics_pub);
-	ps.disconnectFromServer();
+	if (ps.pubsub(topics_sub, topics_pub) == 1) return 1;
+	if (ps.disconnectFromServer() == 1) return 1;
 }
-void MQTT::menu(std::string CLIENT_ID, std::string SERVER_ADDRESS, int QOS) {
+int MQTT::menu(std::string CLIENT_ID, std::string SERVER_ADDRESS, int QOS) {
 	int input = 0;
 	while (input != 4) {
 		std::cout << "~Welcome to the MQTT Client!~\nWhat do you want to do? Type in the number you want.\n "
@@ -112,22 +112,19 @@ void MQTT::menu(std::string CLIENT_ID, std::string SERVER_ADDRESS, int QOS) {
 		case 1:
 			std::cin.ignore();
 			system("cls");
-			publish(CLIENT_ID, SERVER_ADDRESS, QOS);
+			if (publish(CLIENT_ID, SERVER_ADDRESS, QOS) == 1) return 1;
 			system("cls");
 			break;
 		case 2:
 			std::cin.ignore();
 			system("cls");
-			subscribe(CLIENT_ID, SERVER_ADDRESS, QOS);
+			if (subscribe(CLIENT_ID, SERVER_ADDRESS, QOS) == 1) return 1;
 			system("cls");
 			break;
 		case 3:
 			std::cin.ignore();
 			system("cls");
-			pubsub(CLIENT_ID, SERVER_ADDRESS, QOS);
-			system("cls");
-			break;
-		case 4:
+			if (pubsub(CLIENT_ID, SERVER_ADDRESS, QOS) == 1) return 1;
 			system("cls");
 			break;
 		default:
